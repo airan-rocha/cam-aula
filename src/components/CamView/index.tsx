@@ -32,7 +32,7 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
 
 
     return (
-        <CameraView
+      <CameraView
         style={{flex: 1}} 
         facing={type} 
         ratio="4:3" 
