@@ -1,11 +1,14 @@
-import { Button, Text, TouchableOpacity, View } from 'react-native';
-import {useState} from "react";
-import {CameraView, useCameraPermissions, CameraPictureOptions, CameraCapturedPicture} from "expo-camera";
+import {Button, Text, TouchableOpacity, View, Linking, Modal, Image } from 'react-native';
+import {useState, useRef} from "react";
+import {CameraView, useCameraPermissions} from "expo-camera";
 
 import CameraViewProps from "./props";
 import { styles } from './styles';
 
 export default function CamView ({type, onFlipCamera}:CameraViewProps) {
+    const cameRef = useRef(null);
+    const [capturedPhoto, setCapturedPhoto] = useState<string | null>();
+    const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
     
     const [permission, requestPermission] = useCameraPermissions();
     const [zoom, setZoom] = useState<0.0 | 0.5 | 0.7 | 1>(0.0);
@@ -27,7 +30,12 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
       }
 
       async function takePicture () {
-        console.log("tirou foto");
+        if(cameRef && cameRef.current){
+          const data  = await cameRef.current.takePictureAsync();
+          setCapturedPhoto(data.uri);
+          setModalIsOpen(true);
+          console.log(data.uri);
+        }
       }
 
 
@@ -39,6 +47,9 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
         zoom={zoom}
         flash="auto"
         enableTorch={torch}
+        autofocus='on'
+        ref={cameRef}
+        onCameraReady={() => console.log("ops! deu erro")}
       >
         <View style={styles.mainView}>
           <TouchableOpacity 
@@ -58,6 +69,41 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
             <Text style={styles.torchText}>T-{torch ? "on" : "off"}</Text>
           </TouchableOpacity>
         </View>
+
+        //condicional (tipo if) para renderizar o modal se o capturedPhoto não for nulo
+        {capturedPhoto && (
+          <Modal
+          animationType='slide'
+          transparent={false}
+          visible={modalIsOpen}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              margin: 20,
+            }}
+          >
+            <TouchableOpacity
+              style={{margin: 10}}
+              onPress={() => setModalIsOpen(false)}
+            >
+              <Text>Close</Text>
+
+            </TouchableOpacity>
+            <Image
+            style={{
+              width: "100%",
+              height: 300,
+              borderRadius: 20,
+            }} 
+            source={{uri: capturedPhoto}}
+            />
+          </View>
+        </Modal>
+        )}
+        
       </CameraView>
     )
 }
