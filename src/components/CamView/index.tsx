@@ -1,9 +1,11 @@
-import {Button, Text, TouchableOpacity, View, Linking, Modal, Image } from 'react-native';
 import {useState, useRef} from "react";
-import {CameraView, useCameraPermissions} from "expo-camera";
+import {Button, Text, TouchableOpacity, View, Linking, Modal, Image } from 'react-native';
 
-import CameraViewProps from "./props";
+import {CameraView, useCameraPermissions} from "expo-camera";
+import * as MediaLibrary from 'expo-media-library';
+
 import { styles } from './styles';
+import CameraViewProps from "./props";
 
 export default function CamView ({type, onFlipCamera}:CameraViewProps) {
     const cameRef = useRef(null);
@@ -38,6 +40,14 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
         }
       }
 
+      async function savePicture () {
+        if (capturedPhoto != null){
+          MediaLibrary.saveToLibraryAsync(capturedPhoto).then(() => {
+            setCapturedPhoto(null);
+          });
+        }
+      }
+
 
     return (
       <CameraView
@@ -49,7 +59,7 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
         enableTorch={torch}
         autofocus='on'
         ref={cameRef}
-        onCameraReady={() => console.log("ops! deu erro")}
+        // onCameraReady={() => console.log("ops! deu erro")}
       >
         <View style={styles.mainView}>
           <TouchableOpacity 
@@ -85,13 +95,20 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
               margin: 20,
             }}
           >
-            <TouchableOpacity
-              style={{margin: 10}}
-              onPress={() => setModalIsOpen(false)}
-            >
-              <Text>Close</Text>
-
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row'}}>
+              <TouchableOpacity
+                style={{margin: 10}}
+                onPress={() => setModalIsOpen(false)}
+              >
+                <Text>Close</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{margin: 10}}
+                onPress={savePicture}
+              >
+                <Text>Save</Text>
+              </TouchableOpacity>
+            </View>
             <Image
             style={{
               width: "100%",

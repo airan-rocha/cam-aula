@@ -1,7 +1,8 @@
-import {CameraView, CameraType, useCameraPermissions} from "expo-camera";
 import {useEffect, useState} from "react";
+import { StyleSheet, View, Text, Button } from 'react-native';
+import {CameraView, Camera, CameraType, useCameraPermissions} from "expo-camera";
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import * as MediaLibrary from 'expo-media-library';
 import CamView from "./src/components/CamView";
 
 //passo 1 - importar
@@ -11,9 +12,10 @@ import CamView from "./src/components/CamView";
 export default function App() {
   const [facing, setFacing] = useState<CameraType>("back");
     const [permision, requestPermission] = useCameraPermissions();
-    const [hasPermission, setHasPerminssion] = useState<boolean>(false);
+    const [hasCameraPermission, setHasCameraPerminssion] = useState<boolean>(false);
+    const [hasMediaPermission, setHasMediaPermission] = useState<boolean>(false);
 
-    // useEffect(() => {
+    useEffect(() => {
     //   (async () => {
     //     console.log("Permission: ", permision);
 
@@ -22,15 +24,50 @@ export default function App() {
     //     }
 
     //     if(!permision?.granted){
-    //       await requestPermission();
+    //       return (
+    //         <View style={{flex: 1, alignContent: 'center', alignItems: 'center'}}>
+    //           <Text>Nós precisamos da sua permissão para usar a camêra </Text>
+    //           <Button onPress={requestPermission} title="Permitir" />
+    //         </View>
+    //       )
+    //       // await requestPermission();
     //     }
 
     //   })();
-    // },[])
+
+      (async () => {
+        const {status} = await Camera.requestCameraPermissionsAsync();
+        setHasCameraPerminssion(status == 'granted');
+        console.log(status);
+      })();
+
+      (async () => {
+        const {status} = await MediaLibrary.requestPermissionsAsync();
+        setHasMediaPermission(status == 'granted');
+        console.log(status);
+      })();
+
+    },[])
 
     const flipCamera = () => {
       setFacing((value) => value == "back" ? "front" : "back");
     };
+
+    if(hasCameraPermission === false || null){
+      return (
+        <View style={{marginTop: 200, alignContent: "center", alignItems: "center"}}>
+          <Text>Não tem permissão de usar a camêra</Text>
+        </View>
+      )
+    }
+
+    if(hasMediaPermission === false || null){
+      return (
+        <View style={{marginTop: 200, alignContent: "center", alignItems: "center"}}>
+          <Text>Não tem permissão de mídia</Text>
+        </View>
+      )
+    }
 
   return (
     <View style={styles.container}>
