@@ -24,23 +24,23 @@ export const styles = StyleSheet.create({
       marginBottom: 15,
       color: "#fff",
     },
-    zoomArea: {
+    takePictureArea: {
       position: "absolute",
       bottom: 20,
-      left: 170,
+      left: 150,
     },
-    zoomText: {
+    takePictureText: {
       fontSize: 20,
       marginBottom: 15,
       color: "#fff",
     },
-    takePictureArea: {
+    zoomArea: {
       position: "absolute",
       bottom: 20,
-      right: 110,
+      right: 90,
     },
-    takePictureText: {
-      fontSize: 20,
+    zoomText: {
+      fontSize: 15,
       marginBottom: 15,
       color: "#fff",
     },

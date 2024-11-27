@@ -1,8 +1,9 @@
 import {useState, useRef} from "react";
 import {Button, Text, TouchableOpacity, View, Linking, Modal, Image } from 'react-native';
 
-import {CameraView, useCameraPermissions} from "expo-camera";
+import {CameraView, ImageType} from "expo-camera";
 import * as MediaLibrary from 'expo-media-library';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import { styles } from './styles';
 import CameraViewProps from "./props";
@@ -11,32 +12,22 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
     const cameRef = useRef(null);
     const [capturedPhoto, setCapturedPhoto] = useState<string | null>();
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
+
+    const imageType : ImageType = 'png';
+
+    const options = {quality: 1, imageType: imageType }
     
-    const [permission, requestPermission] = useCameraPermissions();
+
     const [zoom, setZoom] = useState<0.0 | 0.5 | 0.7 | 1>(0.0);
     const [torch, setTorch] = useState(false);
 
-    if (!permission) {
-        // Camera permissions are still loading.
-        return <View />;
-      }
-    
-      if (!permission?.granted) {
-        // Camera permissions are not granted yet.
-        return (
-          <View style={styles.container}>
-            <Text style={styles.message}>Nós precisamos da sua permissão para usar a camêra </Text>
-            <Button onPress={requestPermission} title="Permitir" />
-          </View>
-        );
-      }
 
       async function takePicture () {
         if(cameRef && cameRef.current){
-          const data  = await cameRef.current.takePictureAsync();
+          const data  = await cameRef.current.takePictureAsync(options);
           setCapturedPhoto(data.uri);
           setModalIsOpen(true);
-          console.log(data.uri);
+          console.log(data);
         }
       }
 
@@ -67,16 +58,16 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
             onPress={() => {onFlipCamera(); setZoom(0)}}
             // onPress={onFlipCamera}
           >
-            <Text style={styles.flipText}>Flip Camera</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.zoomArea} onPress={() => setZoom(value => value == 0.0? 0.5 : value == 0.5? 0.7 : value == 0.7? 1 : 0.0)}>
-            <Text style={styles.zoomText}>{ zoom == 0.0? "1x" : zoom == 0.5? "5x" : zoom == 0.7? "7x" : "10x"}</Text>
+            <Text style={styles.flipText}><MaterialIcons name="cameraswitch" size={32} color="#ffffff" /></Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.takePictureArea} onPress={takePicture}>
-            <Text style={styles.takePictureText}>( TP )</Text>
+            <Text style={styles.takePictureText}><MaterialIcons name="photo-camera" size={32} color="#ffffff" /></Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.zoomArea} onPress={() => setZoom(value => value == 0.0? 0.5 : value == 0.5? 0.7 : value == 0.7? 1 : 0.0)}>
+            <Text style={styles.zoomText}><MaterialIcons name="zoom-in" size={32} color="#ffffff" />{ zoom == 0.0? "1x" : zoom == 0.5? "5x" : zoom == 0.7? "7x" : "10x"}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.torchArea} onPress={() => setTorch(value => !value)}>
-            <Text style={styles.torchText}>T-{torch ? "on" : "off"}</Text>
+            <Text style={styles.torchText}><MaterialIcons name={torch ? "flashlight-on" : "flashlight-off"} size={32} color="#ffffff" /></Text>
           </TouchableOpacity>
         </View>
 
@@ -95,28 +86,28 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
               margin: 20,
             }}
           >
+            <Image
+              style={{
+                width: "100%",
+                height: 450,
+                borderRadius: 20,
+              }} 
+              source={{uri: capturedPhoto}}
+            />
             <View style={{ flexDirection: 'row'}}>
               <TouchableOpacity
                 style={{margin: 10}}
                 onPress={() => setModalIsOpen(false)}
               >
-                <Text>Close</Text>
+                <Text><MaterialIcons name="close" size={34} color="black" /></Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{margin: 10}}
                 onPress={savePicture}
               >
-                <Text>Save</Text>
+                <Text><MaterialIcons name="save-alt" size={34} color="black" /></Text>
               </TouchableOpacity>
             </View>
-            <Image
-            style={{
-              width: "100%",
-              height: 300,
-              borderRadius: 20,
-            }} 
-            source={{uri: capturedPhoto}}
-            />
           </View>
         </Modal>
         )}
