@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import { StyleSheet, View, Text, Button } from 'react-native';
-import {CameraView, Camera, CameraType, useCameraPermissions} from "expo-camera";
+import {Camera, CameraType} from "expo-camera";
 import { StatusBar } from 'expo-status-bar';
 import * as MediaLibrary from 'expo-media-library';
 import CamView from "./src/components/CamView";
@@ -11,30 +11,10 @@ import CamView from "./src/components/CamView";
 
 export default function App() {
   const [facing, setFacing] = useState<CameraType>("back");
-    const [permision, requestPermission] = useCameraPermissions();
     const [hasCameraPermission, setHasCameraPerminssion] = useState<boolean>(false);
     const [hasMediaPermission, setHasMediaPermission] = useState<boolean>(false);
 
     useEffect(() => {
-    //   (async () => {
-    //     console.log("Permission: ", permision);
-
-    //     if(!permision){
-    //       return <View />
-    //     }
-
-    //     if(!permision?.granted){
-    //       return (
-    //         <View style={{flex: 1, alignContent: 'center', alignItems: 'center'}}>
-    //           <Text>Nós precisamos da sua permissão para usar a camêra </Text>
-    //           <Button onPress={requestPermission} title="Permitir" />
-    //         </View>
-    //       )
-    //       // await requestPermission();
-    //     }
-
-    //   })();
-
       (async () => {
         const {status} = await Camera.requestCameraPermissionsAsync();
         setHasCameraPerminssion(status == 'granted');
@@ -81,7 +61,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    // alignItems: 'center',
     justifyContent: 'center',
   },
 });

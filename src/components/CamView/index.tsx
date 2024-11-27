@@ -1,5 +1,5 @@
 import {useState, useRef} from "react";
-import {Button, Text, TouchableOpacity, View, Linking, Modal, Image } from 'react-native';
+import {Text, TouchableOpacity, View, Modal, Image } from 'react-native';
 
 import {CameraView, ImageType} from "expo-camera";
 import * as MediaLibrary from 'expo-media-library';
@@ -17,10 +17,8 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
 
     const options = {quality: 1, imageType: imageType }
     
-
     const [zoom, setZoom] = useState<0.0 | 0.5 | 0.7 | 1>(0.0);
     const [torch, setTorch] = useState(false);
-
 
       async function takePicture () {
         if(cameRef && cameRef.current){
@@ -50,13 +48,11 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
         enableTorch={torch}
         autofocus='on'
         ref={cameRef}
-        // onCameraReady={() => console.log("ops! deu erro")}
       >
         <View style={styles.mainView}>
           <TouchableOpacity 
             style={styles.flipArea} 
             onPress={() => {onFlipCamera(); setZoom(0)}}
-            // onPress={onFlipCamera}
           >
             <Text style={styles.flipText}><MaterialIcons name="cameraswitch" size={32} color="#ffffff" /></Text>
           </TouchableOpacity>
@@ -111,7 +107,6 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
           </View>
         </Modal>
         )}
-        
       </CameraView>
     )
 }
