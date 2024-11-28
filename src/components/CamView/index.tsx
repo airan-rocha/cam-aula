@@ -4,6 +4,7 @@ import {Text, TouchableOpacity, View, Modal, Image } from 'react-native';
 import {CameraView, ImageType, CameraRatio, FlashMode} from "expo-camera";
 import * as MediaLibrary from 'expo-media-library';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import * as Sharing from 'expo-sharing';
 
 import { styles } from './styles';
 import CameraViewProps from "./props";
@@ -46,6 +47,12 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
           setCapturedPhoto(null);
         });
         // console.log(asset);
+      }
+
+      async function sharePicture() {
+        if(capturedPhoto != null){
+          await Sharing.shareAsync(capturedPhoto);
+        }
       }
 
 
@@ -99,7 +106,7 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
             <Image
               style={{
                 width: "100%",
-                height: 450,
+                height: 480,
                 borderRadius: 20,
               }} 
               source={{uri: capturedPhoto}}
@@ -116,6 +123,12 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
                 onPress={savePicture}
               >
                 <Text><MaterialIcons name="save-alt" size={34} color="black" /></Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{margin: 10}}
+                onPress={sharePicture}
+              >
+                <Text><MaterialIcons name="share" size={34} color="black" /></Text>
               </TouchableOpacity>
             </View>
           </View>
