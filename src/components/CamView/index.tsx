@@ -31,10 +31,21 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
 
       async function savePicture () {
         if (capturedPhoto != null){
+
+          // await saveToAlbum(capturedPhoto, "cam-aula");
+
           MediaLibrary.saveToLibraryAsync(capturedPhoto).then(() => {
             setCapturedPhoto(null);
           });
         }
+      }
+
+      async function saveToAlbum(uri:string, album:string){
+        const asset = await MediaLibrary.createAssetAsync(uri);
+        await MediaLibrary.createAlbumAsync(album, asset, false).then(() => {
+          setCapturedPhoto(null);
+        });
+        // console.log(asset);
       }
 
 
@@ -54,16 +65,16 @@ export default function CamView ({type, onFlipCamera}:CameraViewProps) {
             style={styles.flipArea} 
             onPress={() => {onFlipCamera(); setZoom(0); setFlashStatus("off"); setRatio('4:3')}}
           >
-            <Text style={styles.flipText}><MaterialIcons name="cameraswitch" size={25} color="#ffffff" /></Text>
+            <MaterialIcons name="cameraswitch" size={25} color="#ffffff" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.takePictureArea} onPress={takePicture}>
-            <Text style={styles.takePictureText}><MaterialIcons name="photo-camera" size={32} color="#ffffff" /></Text>
+            <MaterialIcons name="photo-camera" size={40} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.zoomArea} onPress={() => setZoom(value => value == 0.0? 0.5 : value == 0.5? 0.7 : value == 0.7? 1 : 0.0)}>
             <Text style={styles.zoomText}><MaterialIcons name="zoom-in" size={15} color="#ffffff" />{ zoom == 0.0? "1x" : zoom == 0.5? "5x" : zoom == 0.7? "7x" : "10x"}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.flashArea} onPress={() => setFlashStatus(value => value == 'auto'? 'off' : value == 'off'? 'on' : 'auto')}>
-            <Text style={styles.flashText}><MaterialIcons name={`flash-${flashStatus}`} size={20} color="#ffffff" /></Text>
+            <MaterialIcons name={`flash-${flashStatus}`} size={20} color="#ffffff" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.ratioArea} onPress={() => setRatio(value => ratio == '4:3'? '16:9' : '4:3')}>
             <Text style={styles.ratioText}>{ratio}</Text>
