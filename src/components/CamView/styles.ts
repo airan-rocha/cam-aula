@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
       bottom: 57,
       left: 20,
     },
-    takePictureArea: {
+    takeMediaArea: {
       position: "absolute",
       backgroundColor: '#00000094',
       justifyContent: 'center',
@@ -37,6 +37,17 @@ export const styles = StyleSheet.create({
       borderRadius: 50,
       bottom: 50,
       left: '43%',
+    },
+    modeCamera: {
+      position: "absolute",
+      backgroundColor: '#00000094',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 40,
+      height: 40,
+      borderRadius: 50,
+      bottom: 57,
+      right: 20,
     },
     zoomArea: {
       position: "absolute",

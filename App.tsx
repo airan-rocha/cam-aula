@@ -17,6 +17,7 @@ export default function App() {
     useEffect(() => {
       (async () => {
         const {status} = await Camera.requestCameraPermissionsAsync();
+        await Camera.requestMicrophonePermissionsAsync();
         setHasCameraPerminssion(status == 'granted');
         console.log(status);
       })();
